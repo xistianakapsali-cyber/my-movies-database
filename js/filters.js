@@ -283,7 +283,7 @@ export function initFilters(moviesData) {
     studios.forEach(s => studioSel.add(new Option(s, s)));
 }
 
-// ============ TOGGLE CLEAR BUTTON (import from ui but avoid circular) ============
+// ============ TOGGLE CLEAR BUTTON ============
 function toggleClearButton() {
     const clearBtn = document.getElementById('clearSearchBtn');
     const searchInput = document.getElementById('movieSearch');
