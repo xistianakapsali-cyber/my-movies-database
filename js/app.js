@@ -6,7 +6,7 @@ import { loadUserSession, handleAllClick, loadDashboardState, logoutAdmin } from
 import { initFilters, initFuseSearch, applyFilters, setCurrentTypeFilter } from './filters.js';
 import { checkForGitHubUpdates, loadVersion } from './github.js';
 import { showAddMovieForm, editCurrentMovie, deleteMovieFromModal, exportToJSON, importFromJSON, showRequestForm } from './crud.js';
-import { addMovieByTMDBId, openPosterEditor } from './tmdb.js';
+import { addMovieByTMDBId } from './tmdb.js';
 import { showRequestsPanel } from './requests.js';
 
 // Make functions global for HTML onclick handlers
