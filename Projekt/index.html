@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YIOIO Ultimate Database 2026 - Secure</title>
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo">YIOIO</div>
+    <div class="header-controls">
+        <button class="theme-btn">Theme</button>
+        <button class="filter-type-btn active" data-type="all" id="allMoviesBtn">Όλα</button>
+        <button class="filter-type-btn" data-type="Movie">Ταινίες</button>
+        <button class="filter-type-btn" data-type="Series">Σειρές</button>
+        <span id="userNameDisplay" style="margin-right: 10px; font-weight: bold; color: var(--primary);"></span>
+        <button id="loginUserBtn" class="login-btn">Είσοδος</button>
+        <button id="logoutUserBtn" class="logout-user-btn" style="display:none;">Αποσύνδεση</button>
+        <div class="count-wrapper">
+            <div id="movieCount">Τίτλοι: 0</div>
+            <button class="update-btn-header">Ενημέρωση</button>
+        </div>
+    </div>
+</header>
+
+<div class="dashboard" id="dashboard" style="display:none;">
+    <div class="dashboard-header"><h3>Στατιστικά</h3><button class="close-dash-btn">✕</button></div>
+    <div class="dashboard-stats">
+        <div class="stat-item"><span class="stat-label">Σύνολο Τίτλων:</span><span class="stat-value" id="statTotal">0</span></div>
+        <div class="stat-item"><span class="stat-label">Ταινίες:</span><span class="stat-value" id="statMovies">0</span></div>
+        <div class="stat-item"><span class="stat-label">Σειρές:</span><span class="stat-value" id="statSeries">0</span></div>
+        <div class="stat-item"><span class="stat-label">Μ.Ο. Βαθμολογίας:</span><span class="stat-value" id="statAvgRating">0</span></div>
+        <div class="stat-item"><span class="stat-label">Πιο Δημοφιλές Genre:</span><span class="stat-value" id="statTopGenre">-</span></div>
+        <div class="stat-item"><span class="stat-label">Παλαιότερη:</span><span class="stat-value" id="statOldest">-</span></div>
+        <div class="stat-item"><span class="stat-label">Νεότερη:</span><span class="stat-value" id="statNewest">-</span></div>
+    </div>
+    <div class="dashboard-actions">
+        <button class="dash-btn" id="searchByIdBtn" style="background:#2ecc71;color:white;">🔍 Αναζήτηση με ID</button>
+        <button class="dash-btn" id="quickAddBtn" style="background:#2ecc71;color:white;">✏️ Γρήγορη Προσθήκη από Email</button>
+        <button class="dash-btn" id="addMovieFormBtn" style="background:#2ecc71;color:white;">➕ Προσθήκη Ταινίας/Σειράς</button>
+        <button class="dash-btn" id="posterEditorBtn">Επεξεργασία Poster</button>
+        <button class="dash-btn" id="addByTmdbBtn" style="background:#9b59b6;color:white;">🎬 Προσθήκη από TMDB ID</button>
+        <button class="dash-btn" id="viewRequestsBtn" style="background:#9b59b6;color:white;">📋 Αιτήματα Ταινιών</button>
+        <button class="dash-btn" id="exportBtn">📤 Export JSON (τρέχον)</button>
+        <button class="dash-btn" id="removeLinksBtn" style="background:#e67e22;color:white;">🗑️ Αφαίρεση όλων των Link & Export</button>
+        <button class="dash-btn" id="importBtn">📥 Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+        <button class="dash-btn" id="missingPostersBtn" style="background:#e67e22;color:white;">Έλεγχος Poster</button>
+        <button class="dash-btn" id="logoutBtn" style="background:#e74c3c;color:white;display:none;">Αποσύνδεση Διαχειριστή</button>
+    </div>
+</div>
+
+<div class="search-section">
+    <div class="search-wrapper">
+        <input type="text" id="movieSearch" placeholder="Αναζήτηση τίτλου, ηθοποιού, σκηνοθέτη...">
+        <button class="clear-search-btn hidden" id="clearSearchBtn">✕</button>
+    </div>
+    <div class="filter-group">
+        <select id="genreFilter"><option value="All">Όλες οι Κατηγορίες</option></select>
+        <select id="sortSelect">
+            <option value="title">Τίτλος (Α-Ω)</option>
+            <option value="idDesc">ID (Νεότερα πρώτα)</option>
+            <option value="idAsc">ID (Παλαιότερα πρώτα)</option>
+            <option value="yearDesc">Νεότερες πρώτα</option>
+            <option value="ratingDesc">Βαθμολογία (Υψηλή-Χαμηλή)</option>
+            <option value="yearAsc">Παλαιότερες πρώτα</option>
+            <option value="latest">Πρόσφατες Προσθήκες</option>
+            <option value="qualityHD">Ποιότητα (HD/4K πρώτα)</option>
+            <option value="qualitySD">Ποιότητα (SD πρώτα)</option>
+            <option value="pendingOnly">Σε Αναμονή</option>
+        </select>
+        <select id="yearFilter"><option value="All">Όλα τα έτη</option></select>
+        <select id="countryFilter"><option value="All">Όλες οι Χώρες</option></select>
+        <select id="studioFilter"><option value="All">Όλες οι Πλατφόρμες</option></select>
+    </div>
+</div>
+
+<div class="movie-grid dashboard-hidden" id="movieGrid"><div style="text-align:center;padding:50px;">Φόρτωση δεδομένων...</div></div>
+<button id="loadMoreBtn" style="display:none;">ΦΟΡΤΩΣΗ ΠΕΡΙΣΣΟΤΕΡΩΝ</button>
+
+<div id="detailModal">
+    <div class="modal-box">
+        <button class="close-modal">✕</button>
+        <img id="modalImg" class="modal-poster" src="" alt="Poster">
+        <div class="modal-info">
+            <h2 id="modalTitle"></h2>
+            <div class="modal-meta-bar" id="modalMetaBar">
+                <span class="year-badge" id="modalYear"></span>
+                <span id="modalQualityBadge"></span>
+                <span id="modalTypeBadge"></span>
+                <span id="modalCountryBadge"></span>
+                <span id="modalGenreBadge"></span>
+            </div>
+            <div class="rating-section" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="rating-stars-big" id="modalStarsBig">★★★★★</div>
+                    <div class="rating-value-big" id="modalRatingValue">0</div>
+                    <div class="rating-count">/10</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button id="modalDownloadBtn" class="download-btn-yts" style="display:none;">ΛΗΨΗ</button>
+                    <a id="modalImdb" class="modal-icon-btn" href="#" target="_blank" style="background:#f5c518;color:#000;">IMDB</a>
+                    <a id="modalTmdb" class="modal-icon-btn" href="#" target="_blank" style="background:#01b4e4;">TMDB</a>
+                    <button id="modalEditBtn" class="modal-icon-btn" style="display:none;">✏️ Επεξεργασία</button>
+                    <button id="modalDeleteBtn" class="modal-icon-btn danger" style="display:none;">🗑️ Διαγραφή</button>
+                    <button id="modalAddBtn" class="modal-icon-btn" style="display:none; background:#2ecc71;">➕ Προσθήκη</button>
+                    <button id="modalRequestBtn" class="modal-icon-btn" style="background:#9b59b6;display:none;">📢 Ζήτησε Ταινία</button>
+                </div>
+            </div>
+            <div class="modal-description" id="modalDesc"></div>
+            <div class="info-grid">
+                <div class="info-grid-item"><span class="info-grid-label">Σκηνοθεσία</span><span class="info-grid-value" id="modalDirector" style="cursor: pointer; color: var(--primary);">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Σενάριο</span><span class="info-grid-value" id="modalWriter" style="cursor: pointer; color: var(--primary);">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Πλατφόρμα</span><span class="info-grid-value" id="modalStudio">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Ποιότητα</span><span class="info-grid-value" id="modalQualityText">-</span></div>
+            </div>
+            <div style="width: 100%;">
+                <div class="info-grid-label" style="margin-bottom: 8px; padding-left: 12px;">Ηθοποιοί</div>
+                <div id="modalActorsContainer" class="actors-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="backToTop">↑</button>
+<div class="version-badge" id="versionBadge">Έκδοση: 1.0.0</div>
+
+</body>
+</html>
