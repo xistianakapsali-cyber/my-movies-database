@@ -1,4 +1,4 @@
-﻿import { getMoviesData, setFilteredMovies as setStorageFiltered, updateRecentMoviesList } from './storage.js';
+﻿import { getMoviesData, updateRecentMoviesList } from './storage.js';
 import { showToast, setFilteredMovies as setUIFiltered, getFilteredMovies, updateDashboardStats, escapeHtml } from './ui.js';
 import { openDetailsById } from './ui.js';
 
