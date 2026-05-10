@@ -17,7 +17,6 @@ window.exportToJSON = exportToJSON;
 window.importFromJSON = importFromJSON;
 window.showRequestForm = showRequestForm;
 window.addMovieByTMDBId = addMovieByTMDBId;
-window.openPosterEditor = openPosterEditor;
 window.showRequestsPanel = showRequestsPanel;
 window.handleAllClick = handleAllClick;
 window.filterByType = filterByType;
